@@ -1,0 +1,87 @@
+{% extends './plantilla.html' %}
+{% block contenido %}
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6 bg-light p-4 rounded shadow">
+        <h2 class="mb-4 text-center">Nuevo Monumento</h2>
+        <form action="{% url 'guardar_monumento' %}" method="post" id="frm_nuevo_monumento" enctype="multipart/form-data">
+
+            
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre del Monumento:</label>
+                <input placeholder="Ingrese el nombre del monumento" class="form-control" type="text" name="nombre" id="nombre">
+            </div>
+
+            <div class="mb-3">
+                <label for="ubicacion" class="form-label">Ubicación:</label>
+                <input placeholder="Ingrese la ubicación" class="form-control" type="text" name="ubicacion" id="ubicacion">
+            </div>
+
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción:</label>
+                <textarea placeholder="Ingrese una descripción del monumento" class="form-control" name="descripcion" id="descripcion" rows="4"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="imagen" class="form-label">Imagen del Monumento:</label>
+                <input type="file" name="imagen" id="imagen" class="form-control" accept="image/*" required>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a href="/" class="btn btn-outline-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-3"></div>
+</div>
+
+<script>
+    $("#frm_nuevo_monumento").validate({
+        rules: {
+            nombre: {
+                required: true,
+                minlength: 5,
+                maxlength: 50
+            },
+            ubicacion: {
+                required: true
+            },
+            descripcion: {
+                required: true
+            },
+            imagen: {
+                required: true,
+                extension: "jpg|jpeg|png|gif"
+            }
+        },
+        messages: {
+            nombre: {
+                required: "Campo obligatorio",
+                minlength: "Ingrese al menos 5 letras",
+                maxlength: "Ingrese menos de 50 letras"
+            },
+            ubicacion: {
+                required: "Debe ingresar la ubicación"
+            },
+            descripcion: {
+                required: "Ingrese una descripción"
+            },
+            imagen: {
+                required: "Seleccione una imagen",
+                extension: "Solo se permiten archivos .jpg, .jpeg, .png o .gif"
+            }
+        }
+    });
+</script>
+
+<script>
+    $("#imagen").fileinput({
+        allowedFileExtensions: ["png", "jpg", "jpeg"],
+        showCaption: false,
+        dropZoneEnabled: true,
+        showClose: false
+    });
+</script>
+{% endblock %}

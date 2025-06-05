@@ -1,0 +1,75 @@
+{% extends './plantilla.html' %}
+{% block contenido %}
+
+<h1 class="text-center">Listado de Monumentos</h1>
+<hr>
+<br>
+<div class="text-end mb-3">
+  <a href="/nuevo_monumento/" class="btn btn-primary">Agregar Monumento</a>
+</div>
+
+<table class="table table-bordered table-striped table-hover align-middle" id="tbl_monumentos">
+  <thead class="table-dark text-center">
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Ubicación</th>
+      <th>Descripción</th>
+      <th>Imagen</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for monumento in monumentos %}
+    <tr>
+      <td>{{ monumento.id }}</td>
+      <td>{{ monumento.nombre }}</td>
+      <td>{{ monumento.ubicacion }}</td>
+      <td>{{ monumento.descripcion|truncatewords:10 }}</td> <!-- Trunca la descripción a 10 palabras -->
+      <td class="text-center">
+        {% if monumento.imagen %}
+          <a href="{{ monumento.imagen.url }}" target="_blank">
+            <img src="{{ monumento.imagen.url }}" class="img-thumbnail mb-1" alt="Imagen" width="80">
+          </a><br>
+          <a href="{{ monumento.imagen.url }}" download class="btn btn-sm btn-outline-secondary mt-1">Descargar</a>
+        {% else %}
+          <span class="text-muted">Ninguna</span>
+        {% endif %}
+      </td>
+      <td class="text-center">
+        <a class="btn btn-outline-warning" href="/editar_monumento/{{ monumento.id }}">
+          <i class="fa fa-pen"></i>
+        </a>
+        <a href="#" onclick="eliminarMonumento('{{ monumento.id }}');"
+           class="btn btn-outline-danger">
+          <i class="fa fa-trash"></i>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script>
+function eliminarMonumento(id) {
+    Swal.fire({
+        title: "CONFIRMACIÓN",
+        text: "¿Está seguro de eliminar el monumento de forma permanente?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, Eliminar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "/eliminar_monumento/" + id;
+        }
+    });
+}
+</script>
+
+<script> 
+  let table = new DataTable('#tbl_monumentos');
+</script>
+
+{% endblock %}

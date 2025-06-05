@@ -1,0 +1,52 @@
+{% extends './plantilla.html' %}
+{% block contenido %}
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6 bg-light p-4 rounded shadow">
+        <h2 class="text-center mb-4">Editar Monumento</h2>
+        <form action="/procesar_edicion_monumento/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ monumentoEditar.id }}">
+
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre del Monumento:</label>
+                <input class="form-control" type="text" name="nombre" id="nombre" value="{{ monumentoEditar.nombre }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="ubicacion" class="form-label">Ubicación:</label>
+                <input class="form-control" type="text" name="ubicacion" id="ubicacion" value="{{ monumentoEditar.ubicacion }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción:</label>
+                <textarea class="form-control" name="descripcion" id="descripcion" rows="4">{{ monumentoEditar.descripcion }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="imagen" class="form-label">Imagen del Monumento:</label><br>
+                {% if monumentoEditar.imagen %}
+                    <div class="mb-2">
+                        <a href="{{ monumentoEditar.imagen.url }}" target="_blank">
+                            <img src="{{ monumentoEditar.imagen.url }}" class="img-thumbnail" width="120" alt="Imagen actual">
+                        </a><br>
+                        <a href="{{ monumentoEditar.imagen.url }}" download class="btn btn-sm btn-outline-secondary mt-1">Descargar Imagen</a>
+                    </div>
+                {% endif %}
+                <input type="file" class="form-control" name="imagen" id="imagen" accept="image/*">
+                <small class="text-muted">Si no selecciona una nueva imagen, se conservará la actual.</small>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-warning">
+                    <i class="fa fa-pen"></i> Editar
+                </button>
+                <a href="/" class="btn btn-outline-danger">
+                    <i class="fa fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-3"></div>
+</div>
+{% endblock %}
