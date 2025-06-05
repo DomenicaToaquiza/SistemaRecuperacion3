@@ -1,0 +1,74 @@
+{% extends './plantilla.html' %}
+{% block contenido %}
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6 bg-light p-4 rounded shadow">
+        <h2 class="mb-4 text-center">Editar Visita Guiada</h2>
+        <form action="{% url 'procesar_edicion_visita' visita.id %}" method="post" id="frm_editar_visita">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ visita.id }}">
+            
+            <div class="mb-3">
+                <label for="monumento" class="form-label">Monumento:</label>
+                <input type="text" class="form-control" value="{{ visita.monumento.nombre }}" disabled>
+            </div>
+
+            <div class="mb-3">
+                <label for="fecha" class="form-label">Fecha:</label>
+                <input type="date" class="form-control" name="fecha" id="fecha" value="{{ visita.fecha }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="guia" class="form-label">Guía:</label>
+                <input type="text" class="form-control" name="guia" id="guia" value="{{ visita.guia }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="duracion_minutos" class="form-label">Duración (minutos):</label>
+                <input type="number" class="form-control" name="duracion_minutos" id="duracion_minutos" value="{{ visita.duracion_minutos }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="observaciones" class="form-label">Observaciones:</label>
+                <textarea class="form-control" name="observaciones" id="observaciones" rows="4">{{ visita.observaciones }}</textarea>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-warning">Actualizar</button>
+                <a href="{% url 'listar_visitas' %}" class="btn btn-outline-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-3"></div>
+</div>
+
+<script>
+    // Validación del formulario
+    $("#frm_editar_visita").validate({
+        rules: {
+            fecha: {
+                required: true
+            },
+            guia: {
+                required: true
+            },
+            duracion_minutos: {
+                required: true,
+                min: 1
+            }
+        },
+        messages: {
+            fecha: {
+                required: "Este campo es obligatorio"
+            },
+            guia: {
+                required: "Por favor, ingrese el nombre del guía"
+            },
+            duracion_minutos: {
+                required: "Por favor, ingrese la duración",
+                min: "La duración debe ser mayor a 0"
+            }
+        }
+    });
+</script>
+{% endblock %}

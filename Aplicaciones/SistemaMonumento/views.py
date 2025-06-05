@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
-from .models import Monumento
+from .models import Monumento, VisitaGuiada
 
 def inicio(request):
     return render(request, 'listarMonumento.html') 
@@ -75,3 +75,63 @@ def procesar_edicion_monumento(request):
     monumento.save()
     messages.success(request, "Monumento actualizado exitosamente")
     return redirect('listar_monumento')  # Redirige a la lista de monumentos
+
+
+# VISITAS
+
+def nueva_visita(request):
+    monumentos = Monumento.objects.all()  # Obtiene todos los monumentos disponibles
+    return render(request, 'nueva_visita.html', {'monumentos': monumentos})
+
+def guardar_visita(request):
+    if request.method == 'POST':
+        monumento = Monumento.objects.get(id=request.POST['monumento'])  # Obtener el monumento seleccionado
+        fecha = request.POST['fecha']
+        guia = request.POST['guia']
+        duracion_minutos = request.POST['duracion_minutos']
+        observaciones = request.POST['observaciones']
+
+        # Crear una nueva visita guiada
+        VisitaGuiada.objects.create(
+            monumento=monumento,
+            fecha=fecha,
+            guia=guia,
+            duracion_minutos=duracion_minutos,
+            observaciones=observaciones
+        )
+
+        messages.success(request, "Visita guiada guardada exitosamente")
+        return redirect('listar_visitas')  # Redirige al listado de visitas guiadas
+    else:
+        return redirect('listar_visitas')
+
+
+def listar_visitas(request):
+    visitas = VisitaGuiada.objects.all()  # Obtiene todas las visitas guiadas
+    return render(request, 'listar_visitas.html', {'visitas': visitas})
+
+def editar_visita(request, id):
+    visita = get_object_or_404(VisitaGuiada, id=id)
+    return render(request, 'editar_visita.html', {'visita': visita})
+
+def procesar_edicion_visita(request, id):
+    visita = get_object_or_404(VisitaGuiada, id=id)
+
+    # Actualizamos los datos
+    visita.fecha = request.POST["fecha"]
+    visita.guia = request.POST["guia"]
+    visita.duracion_minutos = request.POST["duracion_minutos"]
+    visita.observaciones = request.POST["observaciones"]
+
+    # Guardamos los cambios
+    visita.save()
+    messages.success(request, "Visita guiada actualizada exitosamente")
+    return redirect('listar_visitas')  # Redirige al listado de visitas
+
+
+
+def eliminar_visita(request, id):
+    visita = get_object_or_404(VisitaGuiada, id=id)
+    visita.delete()
+    messages.success(request, "Visita guiada eliminada exitosamente")
+    return redirect('listar_visitas')
